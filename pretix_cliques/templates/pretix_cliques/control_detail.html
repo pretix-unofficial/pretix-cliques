@@ -1,0 +1,40 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% load eventurl %}
+{% load urlreplace %}
+{% load bootstrap3 %}
+{% block title %}{% trans "Clique detail" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "Clique detail" %}</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-horizontal">
+            <fieldset>
+                <legend>{% trans "Change clique" %}</legend>
+                {% bootstrap_form form layout="horizontal" %}
+            </fieldset>
+            <fieldset>
+                <legend>{% trans "Connected orders" %}</legend>
+                <ul>
+                    {% for oc in orders %}
+                        <li>
+                            <a href="{% url "control:event.order" event=request.event.slug organizer=request.event.organizer.slug code=oc.order.code %}">
+                                {% blocktrans with code=oc.order.code %}Order {{ code }}{% endblocktrans %}
+                            </a></li>
+                    {% empty %}
+                        <p>
+                            <em>
+                                {% trans "No orders connected. Maybe someone created this clique and hasn't yet completed checkout." %}
+                            </em>
+                        </p>
+                    {% endfor %}
+                </ul>
+            </fieldset>
+        </div>
+        <div class="form-group submit-group">
+            <button type="submit" class="btn btn-primary btn-save">
+                {% trans "Save" %}
+            </button>
+        </div>
+    </form>
+{% endblock %}

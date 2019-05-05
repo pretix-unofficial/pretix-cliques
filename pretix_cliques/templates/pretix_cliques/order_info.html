@@ -1,0 +1,43 @@
+{% load i18n %}
+{% load eventurl %}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        {% if order.can_modify_answers %}
+            <div class="pull-right">
+                <a href="{% eventurl event "plugins:pretix_cliques:event.order.clique.modify" secret=order.secret order=order.code %}">
+                    <span class="fa fa-edit"></span>
+                    {% trans "Change details" %}
+                </a>
+            </div>
+        {% endif %}
+        <h3 class="panel-title">
+            {% trans "Clique" %}
+        </h3>
+    </div>
+    <div class="panel-body">
+        {% if clique %}
+            <p>
+                {% blocktrans trimmed with clique=clique.name %}
+                    You are taking part in the raffle as part of the clique <strong>{{ clique }}</strong>.
+                {% endblocktrans %}
+
+            </p>
+            {% if is_admin %}
+                <p>
+                    {% trans "You have created this clique. Your fellow clique members are:" %}
+                </p>
+                <ul>
+                    {% for f in fellows %}
+                        <li>{{ f.attendee_name }}</li>
+                    {% empty %}
+                        <li><em>{% trans "Nobody has joined your clique yet. Go tell your friends about it!" %}</em></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% else %}
+            <p>
+                {% trans "You are taking part in the raffle as an individual." %}
+            </p>
+        {% endif %}
+    </div>
+</div>

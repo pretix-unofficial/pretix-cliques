@@ -1,0 +1,344 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-05-08 12:49+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: pretix_cliques/__init__.py:10
+msgid "pretix Cliques"
+msgstr ""
+
+#: pretix_cliques/__init__.py:12
+msgid ""
+"This pretix plugin adds the cliques feature."
+msgstr ""
+
+#: pretix_cliques/checkoutflow.py:18
+msgid ""
+"There already is a clique with that name. If you want to join a clique "
+"already created by your friends, please choose to join a clique instead of "
+"creating a new one."
+msgstr ""
+
+#: pretix_cliques/checkoutflow.py:21 pretix_cliques/checkoutflow.py:72
+#: pretix_cliques/views.py:26
+msgid "This field is required."
+msgstr ""
+
+#: pretix_cliques/checkoutflow.py:26 pretix_cliques/checkoutflow.py:80
+#: pretix_cliques/templates/pretix_cliques/control_list.html:22
+msgid "Clique name"
+msgstr ""
+
+#: pretix_cliques/checkoutflow.py:31 pretix_cliques/checkoutflow.py:85
+msgid "Clique password"
+msgstr ""
+
+#: pretix_cliques/checkoutflow.py:70
+msgid ""
+"This clique does not exist. Are you sure you entered the name correctly?"
+msgstr ""
+
+#: pretix_cliques/checkoutflow.py:74
+msgid ""
+"The password does not match. Please enter the password exactly as your "
+"friends send it."
+msgstr ""
+
+#: pretix_cliques/checkoutflow.py:125
+msgctxt "checkoutflow"
+msgid "Clique"
+msgstr ""
+
+#: pretix_cliques/checkoutflow.py:157
+msgid "We couldn't handle your input, please check below for errors."
+msgstr ""
+
+#: pretix_cliques/models.py:24
+#: pretix_cliques/templates/pretix_cliques/checkout_confirm.html:12
+#: pretix_cliques/templates/pretix_cliques/control_order_info.html:15
+#: pretix_cliques/templates/pretix_cliques/control_order_info.html:23
+#: pretix_cliques/templates/pretix_cliques/order_info.html:14
+msgid "Clique"
+msgstr ""
+
+#: pretix_cliques/models.py:25
+msgid "Clique administrator"
+msgstr ""
+
+#: pretix_cliques/signals.py:122
+msgid "The user left a clique."
+msgstr ""
+
+#: pretix_cliques/signals.py:123
+msgid "The user joined a clique."
+msgstr ""
+
+#: pretix_cliques/signals.py:124
+msgid "The user created a new clique."
+msgstr ""
+
+#: pretix_cliques/signals.py:125
+msgid "The user changed a clique password."
+msgstr ""
+
+#: pretix_cliques/signals.py:126 pretix_cliques/signals.py:128
+#: pretix_cliques/views.py:310
+msgid "The clique has been deleted."
+msgstr ""
+
+#: pretix_cliques/signals.py:127
+msgid "The clique has been changed."
+msgstr ""
+
+#: pretix_cliques/signals.py:142
+msgid "Cliques"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/checkout_clique.html:6
+msgid ""
+"When taking part in our ticket raffle, you can choose to participate in the "
+"raffle as part of a clique. You can either start a new clique or join a "
+"clique started by your friends. If you want your friends to join your "
+"clique, they need to enter the clique's name and password exactly like you "
+"typed it."
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/checkout_clique.html:7
+msgid ""
+"All members of the clique take part in the raffle together. Either all of "
+"you get a ticket buying option, or none of you. Neither your membership in a "
+"clique nor the size of the clique will affect your chances to win."
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/checkout_clique.html:15
+#: pretix_cliques/templates/pretix_cliques/order_clique_change.html:58
+#: pretix_cliques/templates/pretix_cliques/order_clique_change.html:73
+msgid "Go back"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/checkout_clique.html:20
+#: pretix_cliques/templates/pretix_cliques/order_clique_change.html:78
+msgid "Continue"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/checkout_confirm.html:8
+msgid "Modify"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/checkout_confirm.html:18
+#: pretix_cliques/templates/pretix_cliques/order_clique_change.html:14
+#: pretix_cliques/templates/pretix_cliques/order_info.html:20
+#, python-format
+msgid ""
+"You are taking part in the raffle as part of the clique <strong>%(clique)s</"
+"strong>."
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/checkout_confirm.html:24
+#, python-format
+msgid ""
+"You are taking part in the raffle as part of the <strong>newly created</"
+"strong> clique <strong>%(clique)s</strong>."
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/checkout_confirm.html:30
+#: pretix_cliques/templates/pretix_cliques/order_info.html:39
+msgid "You are taking part in the raffle as an individual."
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_delete.html:6
+#: pretix_cliques/templates/pretix_cliques/control_delete.html:8
+msgid "Delete clique"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_delete.html:12
+#, python-format
+msgid "Are you sure you want to delete the clique <strong>%(clique)s</strong>?"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_delete.html:14
+msgid ""
+"All orders connected to this clique will be removed from the clique first."
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_delete.html:17
+#: pretix_cliques/templates/pretix_cliques/control_order_clique_change.html:25
+msgid "Cancel"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_delete.html:20
+msgid "Delete"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_detail.html:6
+#: pretix_cliques/templates/pretix_cliques/control_detail.html:8
+msgid "Clique detail"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_detail.html:13
+#: pretix_cliques/templates/pretix_cliques/control_order_clique_change.html:5
+#: pretix_cliques/templates/pretix_cliques/control_order_clique_change.html:9
+#: pretix_cliques/templates/pretix_cliques/order_clique_change.html:5
+#: pretix_cliques/templates/pretix_cliques/order_clique_change.html:7
+msgid "Change clique"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_detail.html:17
+msgid "Connected orders"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_detail.html:22
+#, python-format
+msgid "Order %(code)s"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_detail.html:27
+msgid ""
+"No orders connected. Maybe someone created this clique and hasn't yet "
+"completed checkout."
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_detail.html:36
+#: pretix_cliques/templates/pretix_cliques/control_order_clique_change.html:28
+#: pretix_cliques/templates/pretix_cliques/order_clique_change.html:47
+msgid "Save"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_list.html:6
+#: pretix_cliques/templates/pretix_cliques/control_list.html:8
+msgid "Clique list"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_list.html:12
+msgid "No cliques."
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_order_clique_change.html:12
+#, python-format
+msgid "Back to order %(order)s"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_order_info.html:10
+msgid "Change"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_order_info.html:29
+msgid "Administrator"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_order_info.html:30
+msgid "Yes"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_order_info.html:30
+msgid "No"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/control_order_info.html:34
+msgid "No clique."
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/fragment_cliqueform.html:12
+msgid "I want to participate as an individual"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/fragment_cliqueform.html:19
+msgid "Alright, you're good to go!"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/fragment_cliqueform.html:31
+msgid "I want to join an existing clique"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/fragment_cliqueform.html:50
+msgid "I want to create a new clique"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/order_clique_change.html:12
+msgid "Your clique membership"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/order_clique_change.html:19
+msgid ""
+"\n"
+"                        You need to leave this clique before you can join or "
+"create a new one.\n"
+"                    "
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/order_clique_change.html:25
+msgid ""
+"\n"
+"                            You are the creator of this clique. If you leave "
+"it, nobody will be able to change the\n"
+"                            password any more.\n"
+"                        "
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/order_clique_change.html:33
+msgid "Leave clique"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/order_clique_change.html:42
+msgid "Change clique password"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/order_info.html:9
+msgid "Change details"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/order_info.html:27
+msgid "You have created this clique. Your fellow clique members are:"
+msgstr ""
+
+#: pretix_cliques/templates/pretix_cliques/order_info.html:33
+msgid "Nobody has joined your clique yet. Go tell your friends about it!"
+msgstr ""
+
+#: pretix_cliques/views.py:30
+msgid "New clique password"
+msgstr ""
+
+#: pretix_cliques/views.py:58
+msgid "Unknown order code or not authorized to access this order."
+msgstr ""
+
+#: pretix_cliques/views.py:61 pretix_cliques/views.py:65
+msgid "The clique for this order cannot be changed."
+msgstr ""
+
+#: pretix_cliques/views.py:82
+msgid "Okay, you left your clique successfully. How do you want to continue?"
+msgstr ""
+
+#: pretix_cliques/views.py:101
+msgid "Okay, we changed the password. Make sure to tell your friends!"
+msgstr ""
+
+#: pretix_cliques/views.py:116 pretix_cliques/views.py:133
+#: pretix_cliques/views.py:136 pretix_cliques/views.py:226
+#: pretix_cliques/views.py:273
+msgid "Great, we saved your changes!"
+msgstr ""
+
+#: pretix_cliques/views.py:139 pretix_cliques/views.py:228
+msgid "We could not handle your input. See below for more information."
+msgstr ""
+
+#: pretix_cliques/views.py:255
+msgid "Duplicate clique name"
+msgstr ""

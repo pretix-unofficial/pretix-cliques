@@ -1,0 +1,51 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% load eventurl %}
+{% load urlreplace %}
+{% load bootstrap3 %}
+{% block title %}{% trans "Clique list" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "Clique list" %}</h1>
+    {% if cliques|length == 0 %}
+        <div class="empty-collection">
+            <p>
+                {% blocktrans trimmed %}
+                    No cliques.
+                {% endblocktrans %}
+            </p>
+        </div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-condensed table-hover">
+                <thead>
+                <tr>
+                    <th>{% trans "Clique name" %}</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for c in cliques %}
+                    <tr>
+                        <td>
+                            <strong>
+                                <a href="{% url "plugins:pretix_cliques:event.cliques.detail" event=request.event.slug organizer=request.event.organizer.slug pk=c.pk %}">
+                                    {{ c.name }}
+                                </a>
+                            </strong>
+                        </td>
+                        <td class="text-right">
+                            <a href="{% url "plugins:pretix_cliques:event.cliques.detail" event=request.event.slug organizer=request.event.organizer.slug pk=c.pk %}" class="btn btn-default">
+                                <span class="fa fa-edit"></span>
+                            </a>
+                            <a href="{% url "plugins:pretix_cliques:event.cliques.delete" event=request.event.slug organizer=request.event.organizer.slug pk=c.pk %}" class="btn btn-danger">
+                                <span class="fa fa-trash"></span>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include "pretixcontrol/pagination.html" %}
+    {% endif %}
+{% endblock %}

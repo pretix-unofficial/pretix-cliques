@@ -1,0 +1,3 @@
+recursive-include pretix_cliques/static *
+recursive-include pretix_cliques/templates *
+recursive-include pretix_cliques/locale *

@@ -1,0 +1,24 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% load eventurl %}
+{% load urlreplace %}
+{% load bootstrap3 %}
+{% block title %}{% trans "Delete clique" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "Delete clique" %}</h1>
+    <form action="" method="post" class="form-horizontal">
+        {% csrf_token %}
+        <p>
+            {% blocktrans %}Are you sure you want to delete the clique <strong>{{ clique }}</strong>?{% endblocktrans %}
+        </p>
+        <p>{% trans "All orders connected to this clique will be removed from the clique first." %}</p>
+        <div class="form-group submit-group">
+            <a href="{% url "control:event.items" organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-default btn-cancel">
+                {% trans "Cancel" %}
+            </a>
+            <button type="submit" class="btn btn-danger btn-save">
+                {% trans "Delete" %}
+            </button>
+        </div>
+    </form>
+{% endblock %}

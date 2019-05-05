@@ -1,0 +1,40 @@
+{% load i18n %}
+{% load eventurl %}
+{% load bootstrap3 %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="pull-right">
+            {% if order.changable and 'can_change_orders' in request.eventpermset %}
+                <a href="{% url "plugins:pretix_cliques:control.order.clique.modify" event=request.event.slug organizer=request.event.organizer.slug code=order.code %}">
+                    <span class="fa fa-edit"></span>
+                    {% trans "Change" %}
+                </a>
+            {% endif %}
+        </div>
+        <h3 class="panel-title">
+            {% trans "Clique" %}
+        </h3>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                {% if clique %}
+                    <dl class="dl-horizontal">
+                        <dt>{% trans "Clique" %}</dt>
+                        <dd>
+                            <a href="{% url "plugins:pretix_cliques:event.cliques.detail" event=request.event.slug organizer=request.event.organizer.slug pk=clique.pk %}">
+                                {{ clique.name }}
+                            </a>
+                        </dd>
+                        <dt>{% trans "Administrator" %}</dt>
+                        <dd>{% if is_admin %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</dd>
+                    </dl>
+                {% else %}
+                    <p>
+                        {% trans "No clique." %}
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

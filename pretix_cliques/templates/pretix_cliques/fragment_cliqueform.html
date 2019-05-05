@@ -1,0 +1,61 @@
+{% load i18n %}
+{% load bootstrap3 %}
+<div class="panel-group" id="clique_accordion">
+    <div class="panel panel-default">
+        <label class="accordion-radio">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <input type="radio" name="clique_mode" value="none"
+                            data-parent="#clique_accordion"
+                            {% if selected == "none" %}checked="checked"{% endif %}
+                            data-toggle="radiocollapse" data-target="#clique_none"/>
+                    <strong>{% trans "I want to participate as an individual" %}</strong>
+                </h4>
+            </div>
+        </label>
+        <div id="clique_none"
+                class="panel-collapse collapsed {% if selected == "none" %}in{% endif %}">
+            <div class="panel-body form-horizontal">
+                {% trans "Alright, you're good to go!" %}
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <label class="accordion-radio">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <input type="radio" name="clique_mode" value="join"
+                            data-parent="#clique_accordion"
+                            {% if selected == "join" %}checked="checked"{% endif %}
+                            data-toggle="radiocollapse" data-target="#clique_join"/>
+                    <strong>{% trans "I want to join an existing clique" %}</strong>
+                </h4>
+            </div>
+        </label>
+        <div id="clique_join"
+                class="panel-collapse collapsed {% if selected == "join" %}in{% endif %}">
+            <div class="panel-body form-horizontal">
+                {% bootstrap_form join_form layout="checkout" %}
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <label class="accordion-radio">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <input type="radio" name="clique_mode" value="create"
+                            data-parent="#clique_accordion"
+                            {% if selected == "create" %}checked="checked"{% endif %}
+                            data-toggle="radiocollapse" data-target="#clique_create"/>
+                    <strong>{% trans "I want to create a new clique" %}</strong>
+                </h4>
+            </div>
+        </label>
+        <div id="clique_create"
+                class="panel-collapse collapsed {% if selected == "create" %}in{% endif %}">
+            <div class="panel-body form-horizontal">
+                {% bootstrap_form create_form layout="checkout" %}
+            </div>
+        </div>
+    </div>
+</div>
