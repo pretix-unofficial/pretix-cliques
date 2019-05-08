@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-08 12:49+0200\n"
+"POT-Creation-Date: 2019-05-08 16:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,8 +22,7 @@ msgid "pretix Cliques"
 msgstr ""
 
 #: pretix_cliques/__init__.py:12
-msgid ""
-"This pretix plugin adds the cliques feature."
+msgid "This pretix plugin adds the cliques feature."
 msgstr ""
 
 #: pretix_cliques/checkoutflow.py:18
@@ -273,20 +272,13 @@ msgid "Your clique membership"
 msgstr ""
 
 #: pretix_cliques/templates/pretix_cliques/order_clique_change.html:19
-msgid ""
-"\n"
-"                        You need to leave this clique before you can join or "
-"create a new one.\n"
-"                    "
+msgid "You need to leave this clique before you can join or create a new one."
 msgstr ""
 
 #: pretix_cliques/templates/pretix_cliques/order_clique_change.html:25
 msgid ""
-"\n"
-"                            You are the creator of this clique. If you leave "
-"it, nobody will be able to change the\n"
-"                            password any more.\n"
-"                        "
+"You are the creator of this clique. If you leave it, nobody will be able to "
+"change the password any more."
 msgstr ""
 
 #: pretix_cliques/templates/pretix_cliques/order_clique_change.html:33
