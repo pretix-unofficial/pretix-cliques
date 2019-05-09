@@ -31,6 +31,7 @@ class CliqueCreateForm(forms.Form):
         label=_('Clique password'),
         min_length=3,
         required=False,
+        help_text=_('Optional')
     )
 
     def __init__(self, *args, **kwargs):
@@ -52,16 +53,6 @@ class CliqueCreateForm(forms.Form):
                 code='duplicate_name'
             )
         return name
-
-    def clean(self):
-        password1 = self.cleaned_data.get('password', '')
-
-        if not password1:
-            raise forms.ValidationError({
-                'password': self.error_messages['required'],
-            }, code='required')
-
-        return self.cleaned_data
 
 
 class CliqueJoinForm(forms.Form):
@@ -86,6 +77,7 @@ class CliqueJoinForm(forms.Form):
         min_length=3,
         widget=forms.PasswordInput,
         required=False,
+        help_text=_("Not all cliques require a password.")
     )
 
     def __init__(self, *args, **kwargs):

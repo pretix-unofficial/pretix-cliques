@@ -22,12 +22,10 @@ from .models import OrderClique, Clique
 
 
 class CliqueChangePasswordForm(forms.Form):
-    error_messages = {
-        'required': _('This field is required.'),
-    }
     password = forms.CharField(
         max_length=190,
         label=_('New clique password'),
+        help_text=_("Optional"),
         min_length=3,
         required=False,
     )
@@ -35,16 +33,6 @@ class CliqueChangePasswordForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event')
         super().__init__(*args, **kwargs)
-
-    def clean(self):
-        password1 = self.cleaned_data.get('password', '')
-
-        if not password1:
-            raise forms.ValidationError({
-                'password': self.error_messages['required'],
-            }, code='required')
-
-        return self.cleaned_data
 
 
 @method_decorator(xframe_options_exempt, 'dispatch')

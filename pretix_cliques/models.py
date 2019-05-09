@@ -7,7 +7,7 @@ from pretix.base.models import LoggedModel
 class Clique(LoggedModel):
     event = models.ForeignKey('pretixbase.Event', on_delete=models.CASCADE, related_name='cliques')
     name = models.CharField(max_length=190)
-    password = models.CharField(max_length=190)
+    password = models.CharField(max_length=190, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
