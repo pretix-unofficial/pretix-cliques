@@ -1,6 +1,9 @@
 from django.conf.urls import url
-from .views import OrderCliqueChange, ControlCliqueChange, CliqueList, CliqueDetail, CliqueDelete
 
+from .views import (
+    CliqueDelete, CliqueDetail, CliqueList, ControlCliqueChange,
+    OrderCliqueChange,
+)
 
 urlpatterns = [
     url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/orders/(?P<code>[0-9A-Z]+)/clique$',
@@ -19,4 +22,3 @@ event_patterns = [
         OrderCliqueChange.as_view(),
         name='event.order.clique.modify'),
 ]
-

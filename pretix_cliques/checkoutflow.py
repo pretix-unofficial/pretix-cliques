@@ -3,8 +3,7 @@ from django.contrib import messages
 from django.db.transaction import atomic
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
-from django.utils.translation import pgettext_lazy, ugettext_lazy as _
-
+from django.utils.translation import pgettext_lazy, gettext_lazy as _
 from pretix.presale.checkoutflow import TemplateFlowStep
 from pretix.presale.views import CartMixin
 from pretix.presale.views.cart import cart_session

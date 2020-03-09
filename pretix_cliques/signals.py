@@ -2,16 +2,16 @@ from django.dispatch import receiver
 from django.http import HttpRequest
 from django.template.loader import get_template
 from django.urls import resolve, reverse
-from django.utils.translation import ugettext_lazy as _
-
+from django.utils.translation import gettext_lazy as _
 from pretix.base.models import Event, Order, OrderPosition
-from pretix.base.signals import order_placed, logentry_display
-from pretix.control.signals import (
-    order_info as control_order_info,
-    nav_event)
-from pretix.presale.signals import checkout_flow_steps, order_meta_from_request, checkout_confirm_page_content, \
-    order_info
+from pretix.base.signals import logentry_display, order_placed
+from pretix.control.signals import nav_event, order_info as control_order_info
+from pretix.presale.signals import (
+    checkout_confirm_page_content, checkout_flow_steps, order_info,
+    order_meta_from_request,
+)
 from pretix.presale.views.cart import cart_session
+
 from .checkoutflow import CliqueStep
 from .models import Clique, OrderClique
 

@@ -6,10 +6,9 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
-from django.views.generic import TemplateView, ListView, DeleteView
-
+from django.views.generic import DeleteView, ListView, TemplateView
 from pretix.base.models import Order
 from pretix.control.permissions import EventPermissionRequiredMixin
 from pretix.control.views import UpdateView
@@ -17,8 +16,9 @@ from pretix.control.views.orders import OrderView
 from pretix.multidomain.urlreverse import eventreverse
 from pretix.presale.views import EventViewMixin
 from pretix.presale.views.order import OrderDetailMixin
+
 from .checkoutflow import CliqueCreateForm, CliqueJoinForm
-from .models import OrderClique, Clique
+from .models import Clique, OrderClique
 
 
 class CliqueChangePasswordForm(forms.Form):

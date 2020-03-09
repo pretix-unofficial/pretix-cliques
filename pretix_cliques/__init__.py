@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 
 class PluginApp(AppConfig):
@@ -7,9 +7,9 @@ class PluginApp(AppConfig):
     verbose_name = 'pretix Cliques'
 
     class PretixPluginMeta:
-        name = ugettext_lazy('pretix Cliques')
+        name = gettext_lazy('pretix Cliques')
         author = 'Raphael Michel'
-        description = ugettext_lazy('This pretix plugin adds the cliques feature.')
+        description = gettext_lazy('This pretix plugin adds the cliques feature.')
         visible = True
         version = '1.0.0'
 
