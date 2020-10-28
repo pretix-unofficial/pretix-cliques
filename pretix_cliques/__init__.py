@@ -12,6 +12,7 @@ class PluginApp(AppConfig):
         description = gettext_lazy('This pretix plugin adds the cliques feature.')
         visible = True
         version = '1.0.0'
+        category = 'FEATURE'
 
     def ready(self):
         from . import signals  # NOQA
