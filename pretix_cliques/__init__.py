@@ -4,10 +4,10 @@ from django.utils.translation import gettext_lazy
 
 class PluginApp(AppConfig):
     name = 'pretix_cliques'
-    verbose_name = 'pretix Cliques'
+    verbose_name = 'Cliques'
 
     class PretixPluginMeta:
-        name = gettext_lazy('pretix Cliques')
+        name = gettext_lazy('Cliques')
         author = 'Raphael Michel'
         description = gettext_lazy('This pretix plugin adds the cliques feature.')
         visible = True
