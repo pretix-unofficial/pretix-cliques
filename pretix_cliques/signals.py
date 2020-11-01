@@ -113,7 +113,7 @@ def control_order_info(sender: Event, request, order: Order, **kwargs):
     except OrderClique.DoesNotExist:
         pass
 
-    return template.render(ctx)
+    return template.render(ctx, request=request)
 
 
 @receiver(signal=logentry_display, dispatch_uid="clique_logentry_display")

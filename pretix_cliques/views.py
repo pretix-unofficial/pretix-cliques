@@ -18,7 +18,7 @@ from pretix.presale.views import EventViewMixin
 from pretix.presale.views.order import OrderDetailMixin
 
 from .checkoutflow import CliqueCreateForm, CliqueJoinForm
-from .models import Clique, OrderClique
+from .models import Clique, OrderClique, OrderRaffleOverride
 
 
 class CliqueChangePasswordForm(forms.Form):
@@ -185,6 +185,26 @@ class ControlCliqueForm(forms.ModelForm):
         self.event = kwargs.pop('event')
         super().__init__(*args, **kwargs)
         self.fields['clique'].queryset = self.event.cliques.all()
+
+
+class RaffleOverrideChange(OrderView):
+    permission = 'can_change_orders'
+
+    def post(self, request, *args, **kwargs):
+        mode = request.POST.get('mode')
+        if mode not in dict(OrderRaffleOverride.MODE_CHOICES):
+            mode = OrderRaffleOverride.MODE_NORMAL
+        OrderRaffleOverride.objects.update_or_create(
+            order=self.order,
+            defaults={
+                'mode': mode
+            }
+        )
+        self.order.log_action('pretix_cliques.chance.changed', data={
+            'mode': mode
+        }, user=self.request.user)
+        messages.success(request, _('Great, we saved your changes!'))
+        return redirect(self.get_order_url())
 
 
 class ControlCliqueChange(OrderView):

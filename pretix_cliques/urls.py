@@ -2,10 +2,13 @@ from django.conf.urls import url
 
 from .views import (
     CliqueDelete, CliqueDetail, CliqueList, ControlCliqueChange,
-    OrderCliqueChange,
+    OrderCliqueChange, RaffleOverrideChange,
 )
 
 urlpatterns = [
+    url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/orders/(?P<code>[0-9A-Z]+)/clique/chance$',
+        RaffleOverrideChange.as_view(),
+        name='control.order.raffle.override'),
     url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/orders/(?P<code>[0-9A-Z]+)/clique$',
         ControlCliqueChange.as_view(),
         name='control.order.clique.modify'),

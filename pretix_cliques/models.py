@@ -22,3 +22,17 @@ class OrderClique(models.Model):
     clique = models.ForeignKey(Clique, related_name='ordercliques', on_delete=models.CASCADE,
                                verbose_name=_('Clique'))
     is_admin = models.BooleanField(default=False, verbose_name=_('Clique administrator'))
+
+
+class OrderRaffleOverride(models.Model):
+    MODE_ALWAYS = 'always'
+    MODE_NEVER = 'never'
+    MODE_NORMAL = 'chance'
+    MODE_CHOICES = (
+        (MODE_ALWAYS, _('always chosen')),
+        (MODE_NEVER, _('never chosen')),
+        (MODE_NORMAL, _('normal chance'))
+    )
+
+    order = models.OneToOneField('pretixbase.Order', related_name='raffle_override', on_delete=models.CASCADE)
+    mode = models.CharField(max_length=180, choices=MODE_CHOICES)
