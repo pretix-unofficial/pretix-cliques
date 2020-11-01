@@ -75,6 +75,9 @@ def confirm_page(sender: Event, request: HttpRequest, **kwargs):
 def order_info(sender: Event, order: Order, **kwargs):
     template = get_template('pretix_cliques/order_info.html')
 
+    if not order.require_approval:
+        return ""
+
     ctx = {
         'order': order,
         'event': sender,
