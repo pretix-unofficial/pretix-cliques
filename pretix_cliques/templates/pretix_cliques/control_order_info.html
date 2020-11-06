@@ -16,25 +16,52 @@
         </h3>
     </div>
     <div class="panel-body">
-        <div class="row">
-            <div class="col-md-6 col-xs-12">
-                {% if clique %}
-                    <dl class="dl-horizontal">
-                        <dt>{% trans "Clique" %}</dt>
-                        <dd>
-                            <a href="{% url "plugins:pretix_cliques:event.cliques.detail" event=request.event.slug organizer=request.event.organizer.slug pk=clique.pk %}">
-                                {{ clique.name }}
-                            </a>
-                        </dd>
-                        <dt>{% trans "Administrator" %}</dt>
-                        <dd>{% if is_admin %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</dd>
-                    </dl>
-                {% else %}
-                    <p>
-                        {% trans "No clique." %}
-                    </p>
-                {% endif %}
+        {% if clique %}
+            <dl class="dl-horizontal">
+                <dt>{% trans "Clique" %}</dt>
+                <dd>
+                    <a href="{% url "plugins:pretix_cliques:event.cliques.detail" event=request.event.slug organizer=request.event.organizer.slug pk=clique.pk %}">
+                        {{ clique.name }}
+                    </a>
+                </dd>
+                <dt>{% trans "Administrator" %}</dt>
+                <dd>{% if is_admin %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</dd>
+            </dl>
+        {% else %}
+            <p>
+                {% trans "No clique." %}
+            </p>
+        {% endif %}
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            {% trans "Raffle chance" %}
+        </h3>
+    </div>
+    <div class="panel-body">
+        <form action="{% url "plugins:pretix_cliques:control.order.raffle.override" event=request.event.slug organizer=request.event.organizer.slug code=order.code %}"
+              method="post">
+            {% csrf_token %}
+            <div class="btn-group">
+                <button type="submit"
+                        class="btn {% if order.raffle_override.mode == "never" %}btn-danger active{% else %}btn-default{% endif %}"
+                        name="mode" value="never">
+                    {% trans "Will never be chosen" %}
+                </button>
+                <button type="submit"
+                        class="btn {% if order.raffle_override.mode != "never" and order.raffle_override.mode != "always" %}btn-default active{% else %}btn-default{% endif %}"
+                        name="mode" value="chance">
+                    {% trans "Normal chance" %}
+                </button>
+                <button type="submit"
+                        class="btn {% if order.raffle_override.mode == "always" %}btn-success active{% else %}btn-default{% endif %}"
+                        name="mode" value="always">
+                    {% trans "Will always be chosen" %}
+                </button>
             </div>
-        </div>
+        </form>
+        <p>{% trans "Also affects chances of others in the same clique!" %}</p>
     </div>
 </div>
