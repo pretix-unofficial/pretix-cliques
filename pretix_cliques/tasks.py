@@ -19,12 +19,12 @@ def run_raffle(self, event: Event, subevent_id: int, user_id: int, raffle_size: 
         order=OuterRef('pk'),
         item__admission=True
     ).exclude(
-        subevent=subevent,
+        subevent_id=subevent_id,
     ).order_by().values('order').annotate(k=Count('id')).values('k')
 
     subevent_count = OrderPosition.objects.filter(
         order=OuterRef('pk'),
-        subevent=subevent,
+        subevent_id=subevent_id,
         item__admission=True
     ).order_by().values('order').annotate(k=Count('id')).values('k')
 
@@ -32,12 +32,10 @@ def run_raffle(self, event: Event, subevent_id: int, user_id: int, raffle_size: 
         pcnt_othersub=Subquery(other_subevent_count, output_field=IntegerField()),
         pcnt_subevent=Subquery(subevent_count, output_field=IntegerField()),
     ).filter(
-        pcnt_othersub=0,
+        pcnt_othersub__isnull=True,
         pcnt_subevent__gte=1,
         require_approval=True,
         status=Order.STATUS_PENDING,
-    ).exclude(
-        raffle_override__mode=OrderRaffleOverride.MODE_NEVER
     ).select_related('raffle_override', 'orderclique', 'orderclique__clique').prefetch_related('positions')
 
     clique_ids_remove = set()
@@ -52,11 +50,11 @@ def run_raffle(self, event: Event, subevent_id: int, user_id: int, raffle_size: 
 
         if rom == OrderRaffleOverride.MODE_NEVER:
             # blacklisted ticket, blacklist whole clique
-            if order.orderclique:
+            if getattr(order, 'orderclique', None):
                 clique_ids_remove.add(order.orderclique.clique_id)
             continue
 
-        if order.orderclique:
+        if getattr(order, 'orderclique', None):
             raffle_tickets['clique', order.orderclique.clique_id].append(order)
             if rom == OrderRaffleOverride.MODE_ALWAYS:
                 raffle_keys_prefer.add(('clique', order.orderclique.clique_id))
@@ -65,7 +63,14 @@ def run_raffle(self, event: Event, subevent_id: int, user_id: int, raffle_size: 
             if rom == OrderRaffleOverride.MODE_ALWAYS:
                 raffle_keys_prefer.add(('order', order.code))
 
-    raffle_keys_not_preferred = [k for k in raffle_tickets.keys() if k not in raffle_tickets]
+    for k in clique_ids_remove:
+        try:
+            del raffle_tickets['clique', k]
+            raffle_keys_prefer.remove(('clique', k))
+        except KeyError:
+            pass
+
+    raffle_keys_not_preferred = [k for k in raffle_tickets.keys() if k not in raffle_keys_prefer]
     random.shuffle(raffle_keys_not_preferred)
 
     raffle_order = list(raffle_keys_prefer) + raffle_keys_not_preferred
@@ -74,7 +79,7 @@ def run_raffle(self, event: Event, subevent_id: int, user_id: int, raffle_size: 
     orders_to_approve = []
 
     while raffle_order and approvals_left > 0:
-        orders = raffle_order.pop()
+        orders = raffle_tickets[raffle_order.pop(0)]
         n_tickets = sum(o.pcnt_subevent for o in orders)
 
         orders_to_approve += orders
@@ -98,3 +103,5 @@ def run_raffle(self, event: Event, subevent_id: int, user_id: int, raffle_size: 
                 state='PROGRESS',
                 meta={'value': round(i / len(orders_to_approve) * 100, 2)}
             )
+
+    return len(orders_to_approve)

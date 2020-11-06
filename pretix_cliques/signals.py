@@ -147,7 +147,16 @@ def control_nav_event(sender, request=None, **kwargs):
                 'event': request.event.slug,
                 'organizer': request.event.organizer.slug,
             }),
-            'active': (url.namespace == 'plugins:pretix_cliques'),
+            'active': (url.namespace == 'plugins:pretix_cliques' and 'cliques' in url.url_name),
             'icon': 'group',
+        },
+        {
+            'label': _('Raffle'),
+            'url': reverse('plugins:pretix_cliques:event.raffle', kwargs={
+                'event': request.event.slug,
+                'organizer': request.event.organizer.slug,
+            }),
+            'active': (url.namespace == 'plugins:pretix_cliques' and 'raffle' in url.url_name),
+            'icon': 'bullseye',
         }
     ]
