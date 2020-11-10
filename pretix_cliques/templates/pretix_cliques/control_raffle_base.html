@@ -1,0 +1,14 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% load eventsignal %}
+{% load bootstrap3 %}
+{% block title %}{% trans "Raffle" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "Raffle" %}</h1>
+    <div class="nav-pills nav">
+        <li class="nav-link {% if request.resolver_match.url_name == "event.raffle" %}active{% endif %}"><a href="{% url "plugins:pretix_cliques:event.raffle" organizer=request.organizer.slug event=request.event.slug %}">{% trans "Run raffle" %}</a></li>
+        <li class="nav-link {% if request.resolver_match.url_name == "event.raffle.reject" %}active{% endif %}"><a href="{% url "plugins:pretix_cliques:event.raffle.reject" organizer=request.organizer.slug event=request.event.slug %}">{% trans "Reject unapproved" %}</a></li>
+    </div>
+    {% block inner %}
+    {% endblock %}
+{% endblock %}

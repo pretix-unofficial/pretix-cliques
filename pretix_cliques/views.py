@@ -9,7 +9,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import DeleteView, ListView, TemplateView, FormView
-from pretix_cliques.tasks import run_raffle
+from pretix_cliques.tasks import run_raffle, run_rejection
 
 from pretix import settings
 from pretix.base.models import Order, SubEvent
@@ -362,6 +362,36 @@ class RaffleForm(forms.Form):
             del self.fields['all_subevents']
 
 
+class RejectForm(forms.Form):
+    subevent = forms.ModelChoiceField(
+        SubEvent.objects.none(),
+        label=pgettext_lazy('subevent', 'Date'),
+        required=True,
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop('event')
+        super().__init__(*args, **kwargs)
+
+        if self.event.has_subevents:
+            self.fields['subevent'].queryset = self.event.subevents.all()
+            self.fields['subevent'].widget = Select2(
+                attrs={
+                    'data-inverse-dependency': '#id_all_subevents',
+                    'data-model-select2': 'event',
+                    'data-select2-url': reverse('control:event.subevents.select2', kwargs={
+                        'event': self.event.slug,
+                        'organizer': self.event.organizer.slug,
+                    }),
+                    'data-placeholder': pgettext_lazy('subevent', 'All dates')
+                }
+            )
+            self.fields['subevent'].widget.choices = self.fields['subevent'].choices
+        else:
+            del self.fields['subevent']
+            del self.fields['all_subevents']
+
+
 class RaffleView(EventPermissionRequiredMixin, AsyncAction, FormView):
     template_name = 'pretix_cliques/control_raffle.html'
     permission = 'can_change_orders'
@@ -398,6 +428,55 @@ class RaffleView(EventPermissionRequiredMixin, AsyncAction, FormView):
 
     def get_error_url(self):
         return reverse('plugins:pretix_cliques:event.raffle', kwargs={
+            'organizer': self.request.organizer.slug,
+            'event': self.request.event.slug,
+        })
+
+    def get_error_message(self, exception):
+        if isinstance(exception, str):
+            return exception
+        return super().get_error_message(exception)
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('Your input was not valid.'))
+        return super().form_invalid(form)
+
+
+class RaffleRejectView(EventPermissionRequiredMixin, AsyncAction, FormView):
+    template_name = 'pretix_cliques/control_raffle_reject.html'
+    permission = 'can_change_orders'
+    form_class = RejectForm
+    task = run_rejection
+    known_errortypes = ['OrderError']
+
+    def get(self, request, *args, **kwargs):
+        if 'async_id' in request.GET and settings.HAS_CELERY:
+            return self.get_result(request)
+        return FormView.get(self, request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        k = super().get_form_kwargs()
+        k['event'] = self.request.event
+        return k
+
+    def form_valid(self, form):
+        return self.do(
+            self.request.event.pk,
+            subevent_id=form.cleaned_data['subevent'].pk if form.cleaned_data.get('subevent') else None,
+            user_id=self.request.user.pk,
+        )
+
+    def get_success_message(self, value):
+        return _('{count} orders have been rejected.').format(count=value)
+
+    def get_success_url(self, value):
+        return reverse('plugins:pretix_cliques:event.raffle.reject', kwargs={
+            'organizer': self.request.organizer.slug,
+            'event': self.request.event.slug,
+        })
+
+    def get_error_url(self):
+        return reverse('plugins:pretix_cliques:event.raffle.reject', kwargs={
             'organizer': self.request.organizer.slug,
             'event': self.request.event.slug,
         })

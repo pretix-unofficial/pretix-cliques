@@ -2,8 +2,7 @@ from django.conf.urls import url
 
 from .views import (
     CliqueDelete, CliqueDetail, CliqueList, ControlCliqueChange,
-    OrderCliqueChange, RaffleOverrideChange,
-    RaffleView
+    OrderCliqueChange, RaffleOverrideChange, RaffleView, RaffleRejectView
 )
 
 urlpatterns = [
@@ -15,6 +14,8 @@ urlpatterns = [
         name='control.order.clique.modify'),
     url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/cliques/raffle/$',
         RaffleView.as_view(), name='event.raffle'),
+    url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/cliques/raffle/reject/$',
+        RaffleRejectView.as_view(), name='event.raffle.reject'),
     url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/cliques/$',
         CliqueList.as_view(), name='event.cliques.list'),
     url(r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/cliques/(?P<pk>\d+)/$',
