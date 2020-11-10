@@ -49,7 +49,7 @@ def run_raffle(self, event: Event, subevent_id: int, user_id: int, raffle_size: 
             rom = None
 
         if rom == OrderRaffleOverride.MODE_NEVER:
-            # blacklisted ticket, blacklist whole clique
+            # banned ticket, ban whole clique
             if getattr(order, 'orderclique', None):
                 clique_ids_remove.add(order.orderclique.clique_id)
             continue
