@@ -138,7 +138,7 @@ def shipping_logentry_display(sender, logentry, **kwargs):
 @receiver(nav_event, dispatch_uid="clique_nav")
 def control_nav_event(sender, request=None, **kwargs):
     url = resolve(request.path_info)
-    if not request.user.has_event_permission(request.organizer, request.event, 'can_change_orders', request=request):
+    if not request.user.has_event_permission(request.organizer, request.event, 'can_view_orders', request=request):
         return []
     return [
         {
@@ -156,7 +156,7 @@ def control_nav_event(sender, request=None, **kwargs):
                 'event': request.event.slug,
                 'organizer': request.event.organizer.slug,
             }),
-            'active': (url.namespace == 'plugins:pretix_cliques' and 'raffle' in url.url_name),
+            'active': (url.namespace == 'plugins:pretix_cliques' and ('raffle' in url.url_name or 'stats' in url.url_name)),
             'icon': 'bullseye',
         }
     ]

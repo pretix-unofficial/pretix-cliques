@@ -1,18 +1,26 @@
+import base64
+import hmac
+from collections import defaultdict
+
 from django import forms
 from django.contrib import messages
 from django.db import transaction
-from django.http import Http404
-from django.shortcuts import redirect
+from django.db.models import Count, Exists, OuterRef
+from django.http import Http404, HttpResponse
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
+from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import DeleteView, ListView, TemplateView, FormView
+from django_scopes import scopes_disabled
 from pretix_cliques.tasks import run_raffle, run_rejection
 
 from pretix import settings
-from pretix.base.models import Order, SubEvent
+from pretix.base.models import Order, SubEvent, OrderPosition, OrderRefund, Event
+from pretix.base.views.metrics import unauthed_response
 from pretix.base.views.tasks import AsyncAction
 from pretix.control.forms.widgets import Select2
 from pretix.control.permissions import EventPermissionRequiredMixin
@@ -21,7 +29,6 @@ from pretix.control.views.orders import OrderView
 from pretix.multidomain.urlreverse import eventreverse
 from pretix.presale.views import EventViewMixin
 from pretix.presale.views.order import OrderDetailMixin
-
 from .checkoutflow import CliqueCreateForm, CliqueJoinForm
 from .models import Clique, OrderClique, OrderRaffleOverride
 
@@ -489,3 +496,162 @@ class RaffleRejectView(EventPermissionRequiredMixin, AsyncAction, FormView):
     def form_invalid(self, form):
         messages.error(self.request, _('Your input was not valid.'))
         return super().form_invalid(form)
+
+
+class StatsMixin:
+    def get_ticket_stats(self, event):
+        qs = OrderPosition.objects.filter(
+            order__event=event,
+        ).annotate(
+            has_clique=Exists(OrderClique.objects.filter(order_id=OuterRef('order_id')))
+        )
+        return [
+            {
+                'id': 'tickets_total',
+                'label': _('All tickets, total'),
+                'qs': qs.filter(order__status=Order.STATUS_PENDING, order__require_approval=True),
+                'qs_cliq': True
+            },
+            {
+                'id': 'tickets_registered',
+                'label': _('Tickets registered for raffle'),
+                'qs': qs.filter(order__status=Order.STATUS_PENDING, order__require_approval=True),
+                'qs_cliq': True
+            },
+            {
+                'id': 'tickets_approved',
+                'label': _('Tickets in approved orders (regardless of payment status)'),
+                'qs': qs.filter(order__require_approval=False),
+                'qs_cliq': True
+            },
+            {
+                'id': 'tickets_paid',
+                'label': _('Tickets in paid orders'),
+                'qs': qs.filter(order__require_approval=False, order__status=Order.STATUS_PAID),
+            },
+            {
+                'id': 'tickets_pending',
+                'label': _('Tickets in pending orders'),
+                'qs': qs.filter(order__require_approval=False, order__status=Order.STATUS_PENDING),
+            },
+            {
+                'id': 'tickets_canceled',
+                'label': _('Tickets in canceled orders (except the ones not chosen in raffle)'),
+                'qs': qs.filter(order__require_approval=False, order__status=Order.STATUS_CANCELED),
+            },
+            {
+                'id': 'tickets_canceled_refunded',
+                'label': _('Tickets in canceled and at least partially refunded orders'),
+                'qs': qs.annotate(
+                    has_refund=Exists(OrderRefund.objects.filter(order_id=OuterRef('order_id'), state__in=[OrderRefund.REFUND_STATE_DONE]))
+                ).filter(
+                    price__gt=0, order__status=Order.STATUS_CANCELED, has_refund=True
+                ),
+            },
+            {
+                'id': 'tickets_denied',
+                'label': _('Tickets denied (not chosen in raffle)'),
+                'qs': qs.filter(order__require_approval=True, order__status=Order.STATUS_CANCELED),
+                'qs_cliq': True
+            },
+        ]
+
+
+class StatsView(StatsMixin, EventPermissionRequiredMixin, TemplateView):
+    template_name = 'pretix_cliques/control_stats.html'
+    permission = 'can_view_orders'
+
+    def get_context_data(self, **kwargs):
+
+        def qs_by_item(qs):
+            d = defaultdict(lambda: defaultdict(lambda: 0))
+            for r in qs:
+                d[r['item']][r['subevent']] = r['c']
+            return d
+
+        def qs_by_clique(qs):
+            d = defaultdict(lambda: defaultdict(lambda: 0))
+            for r in qs:
+                d[r['has_clique']][r['subevent']] = r['c']
+            return d
+
+        def qs_by_unique_clique(qs):
+            d = defaultdict(lambda: defaultdict(lambda: 0))
+            for r in qs:
+                d[r['has_clique']][r['subevent']] = r['cc']
+            return d
+
+        def qs_by_subevent(qs):
+            d = defaultdict(lambda: defaultdict(lambda: 0))
+            for r in qs:
+                d[r['subevent']][r['item']] = r['c']
+            return d
+
+        ctx = super().get_context_data()
+        ctx['subevents'] = self.request.event.subevents.all()
+        ctx['items'] = self.request.event.items.all()
+        ctx['ticket_stats'] = []
+        for d in self.get_ticket_stats(self.request.event):
+            qs = list(d['qs'].order_by().values('subevent', 'item').annotate(c=Count('*')))
+            if d.get('qs_cliq'):
+                qsc = list(d['qs'].order_by().values('subevent', 'has_clique').annotate(c=Count('*'), cc=Count('order__orderclique__clique', distinct=True)))
+                c1 = qs_by_clique(qsc)
+                c2 = qs_by_unique_clique(qsc)
+            else:
+                c1 = c2 = None
+
+            ctx['ticket_stats'].append((
+                d['label'],
+                qs_by_item(qs),
+                qs_by_subevent(qs),
+                c1,
+                c2
+            ))
+        return ctx
+
+
+class MetricsView(StatsMixin, View):
+
+    @scopes_disabled()
+    def get(self, request, organizer, event):
+        event = get_object_or_404(Event, slug=event, organizer__slug=organizer)
+        if not settings.METRICS_ENABLED:
+            return unauthed_response()
+
+        # check if the user is properly authorized:
+        if "Authorization" not in request.headers:
+            return unauthed_response()
+
+        method, credentials = request.headers["Authorization"].split(" ", 1)
+        if method.lower() != "basic":
+            return unauthed_response()
+
+        user, passphrase = base64.b64decode(credentials.strip()).decode().split(":", 1)
+
+        if not hmac.compare_digest(user, settings.METRICS_USER):
+            return unauthed_response()
+        if not hmac.compare_digest(passphrase, settings.METRICS_PASSPHRASE):
+            return unauthed_response()
+
+        # ok, the request passed the authentication-barrier, let's hand out the metrics:
+        m = defaultdict(dict)
+        for d in self.get_ticket_stats(event):
+            if d.get('qs_cliq'):
+                qs = d['qs'].order_by().values('subevent', 'item', 'has_clique').annotate(c=Count('*'), cc=Count('order__orderclique__clique', distinct=True))
+                for r in qs:
+                    m[d['id']]['{item="%s",subevent="%s",hasclique="%s"}' % (r['item'], r['subevent'], r['has_clique'])] = r['c']
+                    if r['cc']:
+                        m[d['id'] + '_unique_cliques']['{item="%s",subevent="%s"}' % (r['item'], r['subevent'])] = r['cc']
+            else:
+                qs = d['qs'].order_by().values('subevent', 'item').annotate(c=Count('*'))
+                for r in qs:
+                    m[d['id']]['{item="%s",subevent="%s"}' % (r['item'], r['subevent'])] = r['c']
+
+        output = []
+        for metric, sub in m.items():
+            for label, value in sub.items():
+                output.append("{}{} {}".format(metric, label, str(value)))
+
+        content = "\n".join(output) + "\n"
+
+        return HttpResponse(content)

@@ -1,0 +1,70 @@
+{% extends "pretix_cliques/control_raffle_base.html" %}
+{% load i18n %}
+{% load eventsignal %}
+{% load bootstrap3 %}
+{% load getitem %}
+{% load clique_tags %}
+{% block inner %}
+    <fieldset>
+        <legend>{% trans "Statistics" %}</legend>
+
+        <div class="table-responsive">
+            <table class="table table-condensed table-hover">
+                <thead>
+                <tr>
+                    <th>{% trans "Metric" %}</th>
+                    {% for e in subevents %}
+                        <th class="text-right">{{ e }}</th>
+                    {% endfor %}
+                    <th class="text-right">{% trans "Total" %}</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for label, by_item, by_subevent, by_cliq, cliques in ticket_stats %}
+                    <tr>
+                        <td><strong>{{ label }}</strong></td>
+                        {% for e in subevents %}
+                            <th class="text-right">{{ by_subevent|getitem:e.pk|sum }}</th>
+                        {% endfor %}
+                        <th class="text-right">{{ by_subevent|sum }}</th>
+                    </tr>
+                    {% if by_cliq %}
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<em>{% trans "Individual tickets" %}</em></td>
+                            {% for e in subevents %}
+                                <td class="text-right"><em>{{ by_cliq|getitem:False|getitem:e.pk|default:0 }}</em></td>
+                            {% endfor %}
+                            <td class="text-right"><em>{{ by_cliq|getitem:False|sum }}</em></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<em>{% trans "Number of cliques" %}</em></td>
+                            {% for e in subevents %}
+                                <td class="text-right"><em>{{ cliques|getitem:True|getitem:e.pk|default:0 }}</em></td>
+                            {% endfor %}
+                            <td class="text-right"><em>{{ cliques|getitem:True|sum }}</em></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<em>{% trans "Tickets that are part of a clique" %}</em></td>
+                            {% for e in subevents %}
+                                <td class="text-right"><em>{{ by_cliq|getitem:True|getitem:e.pk|default:0 }}</em></td>
+                            {% endfor %}
+                            <td class="text-right"><em>{{ by_cliq|getitem:True|sum }}</em></td>
+                        </tr>
+                    {% endif %}
+                    {% for item in items %}
+                        <tr class="text-muted">
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;{{ item }}</td>
+                            {% for e in subevents %}
+                                <td class="text-right">{{ by_subevent|getitem:e.pk|getitem:item.pk|default:0 }}</td>
+                            {% endfor %}
+                            <td class="text-right">{{ by_item|getitem:item.pk|sum }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </fieldset>
+{% endblock %}
