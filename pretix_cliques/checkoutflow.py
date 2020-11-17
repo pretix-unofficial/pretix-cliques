@@ -4,8 +4,10 @@ from django.db.transaction import atomic
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.utils.translation import pgettext_lazy, gettext_lazy as _
+
+from pretix.base.models import SubEvent
 from pretix.presale.checkoutflow import TemplateFlowStep
-from pretix.presale.views import CartMixin
+from pretix.presale.views import CartMixin, get_cart
 from pretix.presale.views.cart import cart_session
 
 from .models import Clique
@@ -201,6 +203,23 @@ class CliqueStep(CartMixin, TemplateFlowStep):
         return ctx
 
     def is_completed(self, request, warn=False):
+        if request.event.has_subevents and cart_session(request).get('clique_mode') == 'join' and 'clique_join' in cart_session(request):
+            try:
+                clique = Clique.objects.get(event=self.event, pk=cart_session(request)['clique_join'])
+                clique_subevents = set(c['order__all_positions__subevent'] for c in clique.ordercliques.filter(order__all_positions__canceled=False).values('order__all_positions__subevent').distinct())
+                if clique_subevents:
+                    cart_subevents = set(c['subevent'] for c in get_cart(request).values('subevent').distinct())
+                    if any(c not in clique_subevents for c in cart_subevents):
+                        if warn:
+                            messages.warning(request, _('You requested to join a clique that participates in "{subevent_clique}", while you chose to participate in "{subevent_cart}". Please choose a different clique.').format(
+                                subevent_clique=SubEvent.objects.get(pk=list(clique_subevents)[0]).name,
+                                subevent_cart=SubEvent.objects.get(pk=list(cart_subevents)[0]).name,
+                            ))
+                        return False
+            except Clique.DoesNotExist:
+                pass
+
+
         return 'clique_mode' in cart_session(request)
 
     def is_applicable(self, request):

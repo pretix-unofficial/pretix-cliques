@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-10 16:00+0100\n"
+"POT-Creation-Date: 2020-11-17 14:33+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pretix_cliques/__init__.py:10 pretix_cliques/signals.py:145
+#: pretix_cliques/__init__.py:10 pretix_cliques/signals.py:147
 msgid "Cliques"
 msgstr ""
 
@@ -25,52 +25,61 @@ msgstr ""
 msgid "This pretix plugin adds the cliques feature."
 msgstr ""
 
-#: pretix_cliques/checkoutflow.py:17
+#: pretix_cliques/checkoutflow.py:19
 msgid ""
 "There already is a clique with that name. If you want to join a clique "
 "already created by your friends, please choose to join a clique instead of "
 "creating a new one."
 msgstr ""
 
-#: pretix_cliques/checkoutflow.py:20 pretix_cliques/checkoutflow.py:62
+#: pretix_cliques/checkoutflow.py:22 pretix_cliques/checkoutflow.py:64
 msgid "This field is required."
 msgstr ""
 
-#: pretix_cliques/checkoutflow.py:25 pretix_cliques/checkoutflow.py:70
+#: pretix_cliques/checkoutflow.py:27 pretix_cliques/checkoutflow.py:72
+#: pretix_cliques/signals.py:169
 #: pretix_cliques/templates/pretix_cliques/control_list.html:22
 msgid "Clique name"
 msgstr ""
 
-#: pretix_cliques/checkoutflow.py:30 pretix_cliques/checkoutflow.py:75
+#: pretix_cliques/checkoutflow.py:32 pretix_cliques/checkoutflow.py:77
 msgid "Clique password"
 msgstr ""
 
-#: pretix_cliques/checkoutflow.py:33 pretix_cliques/views.py:40
+#: pretix_cliques/checkoutflow.py:35 pretix_cliques/views.py:40
 msgid "Optional"
 msgstr ""
 
-#: pretix_cliques/checkoutflow.py:60
+#: pretix_cliques/checkoutflow.py:62
 msgid ""
 "This clique does not exist. Are you sure you entered the name correctly?"
 msgstr ""
 
-#: pretix_cliques/checkoutflow.py:64
+#: pretix_cliques/checkoutflow.py:66
 msgid ""
 "The password does not match. Please enter the password exactly as your "
 "friends send it."
 msgstr ""
 
-#: pretix_cliques/checkoutflow.py:79
+#: pretix_cliques/checkoutflow.py:81
 msgid "Not all cliques require a password."
 msgstr ""
 
-#: pretix_cliques/checkoutflow.py:116
+#: pretix_cliques/checkoutflow.py:118
 msgctxt "checkoutflow"
 msgid "Clique"
 msgstr ""
 
-#: pretix_cliques/checkoutflow.py:148
+#: pretix_cliques/checkoutflow.py:150
 msgid "We couldn't handle your input, please check below for errors."
+msgstr ""
+
+#: pretix_cliques/checkoutflow.py:214
+#, python-brace-format
+msgid ""
+"You requested to join a clique that participates in \"{subevent_clique}\", "
+"while you chose to participate in \"{subevent_cart}\". Please choose a "
+"different clique."
 msgstr ""
 
 #: pretix_cliques/models.py:23
@@ -97,35 +106,39 @@ msgstr ""
 msgid "normal chance"
 msgstr ""
 
-#: pretix_cliques/signals.py:125
+#: pretix_cliques/signals.py:127
 msgid "The user left a clique."
 msgstr ""
 
-#: pretix_cliques/signals.py:126
+#: pretix_cliques/signals.py:128
 msgid "The user joined a clique."
 msgstr ""
 
-#: pretix_cliques/signals.py:127
+#: pretix_cliques/signals.py:129
 msgid "The user created a new clique."
 msgstr ""
 
-#: pretix_cliques/signals.py:128
+#: pretix_cliques/signals.py:130
 msgid "The user changed a clique password."
 msgstr ""
 
-#: pretix_cliques/signals.py:129 pretix_cliques/signals.py:131
+#: pretix_cliques/signals.py:131 pretix_cliques/signals.py:133
 #: pretix_cliques/views.py:330
 msgid "The clique has been deleted."
 msgstr ""
 
-#: pretix_cliques/signals.py:130
+#: pretix_cliques/signals.py:132
 msgid "The clique has been changed."
 msgstr ""
 
-#: pretix_cliques/signals.py:154
+#: pretix_cliques/signals.py:156
 #: pretix_cliques/templates/pretix_cliques/control_raffle_base.html:5
 #: pretix_cliques/templates/pretix_cliques/control_raffle_base.html:7
 msgid "Raffle"
+msgstr ""
+
+#: pretix_cliques/signals.py:171
+msgid "Exact matches only"
 msgstr ""
 
 #: pretix_cliques/templates/pretix_cliques/checkout_clique.html:6
