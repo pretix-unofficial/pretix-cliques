@@ -1,3 +1,4 @@
+from django import forms
 from django.dispatch import receiver
 from django.http import HttpRequest
 from django.template.loader import get_template
@@ -5,6 +6,7 @@ from django.urls import resolve, reverse
 from django.utils.translation import gettext_lazy as _
 from pretix.base.models import Event, Order, OrderPosition
 from pretix.base.signals import logentry_display, order_placed
+from pretix.control.forms.filter import FilterForm
 from pretix.control.signals import nav_event, order_info as control_order_info
 from pretix.presale.signals import (
     checkout_confirm_page_content, checkout_flow_steps, order_info,
@@ -160,3 +162,39 @@ def control_nav_event(sender, request=None, **kwargs):
             'icon': 'bullseye',
         }
     ]
+
+
+class CliqueSearchForm(FilterForm):
+    clique_name = forms.CharField(
+        label=_('Clique name'),
+        required=False,
+        help_text=_('Exact matches only')
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop('event')
+        super().__init__(*args, **kwargs)
+        del self.fields['ordering']
+
+    def filter_qs(self, qs):
+        fdata = self.cleaned_data
+        qs = super().filter_qs(qs)
+        if fdata.get('clique_name'):
+            qs = qs.filter(orderclique__clique__name__iexact=fdata.get('clique_name'))
+        return qs
+
+
+try:
+    from pretix.control.signals import order_search_forms
+
+    @receiver(order_search_forms, dispatch_uid="clique_order_search")
+    def control_order_search(sender, request, **kwargs):
+        return CliqueSearchForm(
+            data=request.GET,
+            event=sender,
+            prefix='cliques',
+        )
+
+
+except ImportError:
+    pass
