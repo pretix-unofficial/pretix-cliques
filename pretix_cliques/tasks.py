@@ -11,7 +11,7 @@ import random
 
 
 @app.task(bind=True, base=EventTask)
-def run_raffle(self, event: Event, subevent_id: int, user_id: int, raffle_size: int):
+def run_raffle(self, event: Event, subevent_id: int, user_id: int, raffle_size: int, max_addons: int):
     subevent = SubEvent.objects.get(pk=subevent_id) if subevent_id else None
     user = User.objects.get(pk=user_id)
 
@@ -25,12 +25,21 @@ def run_raffle(self, event: Event, subevent_id: int, user_id: int, raffle_size: 
     subevent_count = OrderPosition.objects.filter(
         order=OuterRef('pk'),
         subevent_id=subevent_id,
+        addon_to__isnull=True,
+        item__admission=True
+    ).order_by().values('order').annotate(k=Count('id')).values('k')
+
+    addon_subevent_count = OrderPosition.objects.filter(
+        order=OuterRef('pk'),
+        subevent_id=subevent_id,
+        addon_to__isnull=False,
         item__admission=True
     ).order_by().values('order').annotate(k=Count('id')).values('k')
 
     eligible_orders = event.orders.annotate(
         pcnt_othersub=Subquery(other_subevent_count, output_field=IntegerField()),
         pcnt_subevent=Subquery(subevent_count, output_field=IntegerField()),
+        acnt_subevent=Subquery(addon_subevent_count, output_field=IntegerField()),
     ).filter(
         pcnt_othersub__isnull=True,
         pcnt_subevent__gte=1,
@@ -75,15 +84,26 @@ def run_raffle(self, event: Event, subevent_id: int, user_id: int, raffle_size: 
 
     raffle_order = list(raffle_keys_prefer) + raffle_keys_not_preferred
     approvals_left = raffle_size
+    addons_left = max_addons
 
     orders_to_approve = []
 
     while raffle_order and approvals_left > 0:
         orders = raffle_tickets[raffle_order.pop(0)]
         n_tickets = sum(o.pcnt_subevent for o in orders)
+        n_addons = sum(o.acnt_subevent for o in orders)
+
+        if n_addons > addons_left:
+            # We do not have enough add-ons left to service this raffle ticket, skip to the
+            # next one, sorry.
+            continue
+
+        # We do not skip if n_tickets < approvals_left, so we prefer giving out a few more
+        # tickets than planned over a few less. This is intentional / accepted behaviour.
 
         orders_to_approve += orders
         approvals_left -= n_tickets
+        addons_left -= n_addons
 
     self.update_state(
         state='PROGRESS',

@@ -345,6 +345,13 @@ class RaffleForm(forms.Form):
         help_text=_('The end result can differ by as much as the size of the largest clique'),
         required=True
     )
+    max_addons = forms.IntegerField(
+        label=_('Maximum number of add-on products to raffle'),
+        help_text=_('Add-on tickets generally do not affect raffle results, but if this number of add-on products '
+                    'was successful, additional tickets with add-on products will no longer win.'),
+        required=True,
+        initial=999999,
+    )
 
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event')
@@ -422,6 +429,7 @@ class RaffleView(EventPermissionRequiredMixin, AsyncAction, FormView):
             subevent_id=form.cleaned_data['subevent'].pk if form.cleaned_data.get('subevent') else None,
             user_id=self.request.user.pk,
             raffle_size=form.cleaned_data['number'],
+            max_addons=form.cleaned_data['max_addons'],
         )
 
     def get_success_message(self, value):
