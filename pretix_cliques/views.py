@@ -373,7 +373,6 @@ class RaffleForm(forms.Form):
             self.fields['subevent'].widget.choices = self.fields['subevent'].choices
         else:
             del self.fields['subevent']
-            del self.fields['all_subevents']
 
 
 class RejectForm(forms.Form):
@@ -403,7 +402,6 @@ class RejectForm(forms.Form):
             self.fields['subevent'].widget.choices = self.fields['subevent'].choices
         else:
             del self.fields['subevent']
-            del self.fields['all_subevents']
 
 
 class RaffleView(EventPermissionRequiredMixin, AsyncAction, FormView):
