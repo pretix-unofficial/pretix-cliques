@@ -2,16 +2,13 @@
 {% load eventurl %}
 <div class="panel panel-primary">
     <div class="panel-heading">
-        {% if order.can_modify_answers %}
-            <div class="pull-right">
-                <a href="{% eventurl event "plugins:pretix_cliques:event.order.clique.modify" secret=order.secret order=order.code %}">
-                    <span class="fa fa-edit"></span>
-                    {% trans "Change details" %}
-                </a>
-            </div>
-        {% endif %}
         <h3 class="panel-title">
             {% trans "Clique" %}
+            {% if order.can_modify_answers %}
+                <a href="{% eventurl event "plugins:pretix_cliques:event.order.clique.modify" secret=order.secret order=order.code %}" class="h6">
+                    <span class="fa fa-edit"></span>{% trans "Change details" %}
+                </a>
+            {% endif %}
         </h3>
     </div>
     <div class="panel-body">

@@ -2,14 +2,11 @@
 {% load eventurl %}
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <div class="pull-right">
-            <a href="{% eventurl request.event "presale:event.checkout" step="clique" cart_namespace=cart_namespace|default_if_none:"" %}">
-                <span class="fa fa-edit"></span>
-                {% trans "Modify" %}
-            </a>
-        </div>
         <h3 class="panel-title">
             {% trans "Clique" %}
+            <a href="{% eventurl request.event "presale:event.checkout" step="clique" cart_namespace=cart_namespace|default_if_none:"" %}" class="h6">
+                <span class="fa fa-edit"></span>{% trans "Modify" %}
+            </a>
         </h3>
     </div>
     <div class="panel-body">
