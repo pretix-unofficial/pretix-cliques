@@ -3,6 +3,7 @@ from distutils.command.build import build
 
 from django.core import management
 from setuptools import find_packages, setup
+from pretix_cliques import __version__
 
 try:
     with open(os.path.join(os.path.dirname(__file__), 'README.rst'), encoding='utf-8') as f:
@@ -24,7 +25,7 @@ cmdclass = {
 
 setup(
     name='pretix-cliques',
-    version='1.0.0',
+    version=__version__,
     description='This pretix plugin adds the cliques feature',
     long_description=long_description,
     url='https://github.com/pretix/pretix-cliques',
