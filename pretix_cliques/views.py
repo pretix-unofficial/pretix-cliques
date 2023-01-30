@@ -14,8 +14,10 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
-from django.views.generic import DeleteView, ListView, TemplateView, FormView
+from django.views.generic import ListView, TemplateView, FormView
 from django_scopes import scopes_disabled
+
+from pretix.helpers.compat import CompatDeleteView
 from pretix_cliques.tasks import run_raffle, run_rejection
 
 from pretix import settings
@@ -302,7 +304,7 @@ class CliqueDetail(EventPermissionRequiredMixin, UpdateView):
         return ctx
 
 
-class CliqueDelete(EventPermissionRequiredMixin, DeleteView):
+class CliqueDelete(EventPermissionRequiredMixin, CompatDeleteView):
     permission = 'can_change_orders'
     template_name = 'pretix_cliques/control_delete.html'
     context_object_name = 'clique'
