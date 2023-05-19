@@ -20,7 +20,7 @@ from django_scopes import scopes_disabled
 from pretix.helpers.compat import CompatDeleteView
 from pretix_cliques.tasks import run_raffle, run_rejection
 
-from pretix import settings
+from django.conf import settings
 from pretix.base.models import Order, SubEvent, OrderPosition, OrderRefund, Event
 from pretix.base.views.metrics import unauthed_response
 from pretix.base.views.tasks import AsyncAction
