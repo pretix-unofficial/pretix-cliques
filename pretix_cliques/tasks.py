@@ -90,8 +90,16 @@ def run_raffle(self, event: Event, subevent_id: int, user_id: int, raffle_size: 
 
     while raffle_order and approvals_left > 0:
         orders = raffle_tickets[raffle_order.pop(0)]
-        n_tickets = sum(o.pcnt_subevent for o in orders)
-        n_addons = sum(o.acnt_subevent for o in orders)
+
+        n_tickets = 0
+        for o in orders:
+            if o.pcnt_subevent is not None:
+                n_tickets = + o.pcnt_subevent
+
+        n_addons = 0
+        for o in orders:
+            if o.acnt_subevent is not None:
+                n_addons = + o.acnt_subevent
 
         if n_addons > addons_left:
             # We do not have enough add-ons left to service this raffle ticket, skip to the
